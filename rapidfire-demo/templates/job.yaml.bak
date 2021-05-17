@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rapidfire-container
+spec:
+  template:
+    spec:
+      containers:
+      - name: rapidfire-container
+        image: akashdro/rapidfire:v2
+        env:
+           - name: POSTGRES_USER
+             value: "test"
+           - name: POSTGRES_PASSWORD
+             value: "test123"
+           - name: POSTGRES_DB
+             value: "db"
+        command: ["/bin/sh","-c"]
+        args: ["rails db:setup && rails db:migrate"]
+#        command: ["rails db:setup && rails db:migrate"]
+
+#        args: ["rails db:setup && rails db:migrate"]
+#        - rails
+#        - db:setup
+#        - db:migrate
+      restartPolicy: Never
+
+      apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "rapidfire-demo.fullname" . }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        env:
+           - name: POSTGRES_USER
+             value: "test"
+           - name: POSTGRES_PASSWORD
+             value: "test123"
+           - name: POSTGRES_DB
+             value: "db"
+        command: {{ .Values.job.command }}
+        args: {{ .Values.job.args }}
+#        command: ["rails db:setup && rails db:migrate"]
+
+#        args: ["rails db:setup && rails db:migrate"]
+#        - rails
+#        - db:setup
+#        - db:migrate
+      restartPolicy: {{ .Values.job.restartPolicy}}

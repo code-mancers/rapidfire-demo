@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database-deployment
+  labels:
+    tier: postgres-db
+spec:
+  template:
+    metadata:
+      name: database-pod
+      labels:
+        tier: postgres-db
+    spec:
+      containers:
+      - name: postgres-container
+        image: akashdro/postgres-3
+        ports:
+        - containerPort: 5432
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: postgres-db

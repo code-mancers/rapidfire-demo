@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: application-service
+  labels:
+    tier: rapidfire-app
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+    protocol: TCP 
+    targetPort: 3000
+    nodePort: 30008
+  selector:
+    tier: rapidfire-app

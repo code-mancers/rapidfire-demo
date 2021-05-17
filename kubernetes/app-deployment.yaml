@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rapidfire-app-deployment
+  labels:
+    tier: rapidfire-app
+spec:
+  template:
+    metadata:
+      name: rapidfire-pod
+      labels:
+        tier: rapidfire-app
+    spec:
+      containers:
+      - name: rapidfire-container
+        image: akashdro/rapidfire:v2
+        command: [ "/bin/bash", "-ce", "tail -f /dev/null" ]
+        ports:
+        - containerPort: 3000
+        env:
+        - name: POSTGRES_USER
+          value: "test"
+        - name: POSTGRES_PASSWORD
+          value: "test123"
+        - name: POSTGRES_DB
+          value: db
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: rapidfire-app

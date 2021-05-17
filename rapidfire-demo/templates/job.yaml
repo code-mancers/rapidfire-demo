@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rapidfire-container
+spec:
+  template:
+    spec:
+      containers:
+      - name: rapidfire-container
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        env:
+           {{- range .Values.envar }}
+           - name: {{ .name }}
+             value: {{ .value }}
+           {{- end }} 
+        command: ["/bin/sh","-c"]
+        args: ["rails db:setup && rails db:migrate"]
+#        - rails
+#        - db:setup
+#        - db:migrate
+      restartPolicy: {{ .Values.job.restartPolicy }}
